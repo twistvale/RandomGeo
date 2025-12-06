@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Explorer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <main>
+        <div id="sidebar">
+            <header>
+                <h1>🌌 Quantum Explorer</h1>
+                <p>Generate a geo-random point within your chosen exploration radius.</p>
+            </header>
+
+            <div id="controls-section">
+                <div class="input-group">
+                    <label for="radius">Exploration Radius (meters):</label>
+                    <input type="number" id="radius" value="1000" min="100" max="10000">
+                    <span class="input-description">Try a smaller radius (e.g., 500) for local points.</span>
+                </div>
+                
+                <button id="generateBtn">
+                    ✨ Generate New Point
+                </button>
+
+                <div id="status-box">
+                    <p id="status" class="status-loading">Finding location...</p>
+                </div>
+            </div>
+            
+            <div id="results-display">
+                <h3>📍 Target Coordinates:</h3>
+                <p id="results-lat">Lat: --</p>
+                <p id="results-lng">Lng: --</p>
+                <p class="input-description">Walk toward the **Red Marker** on the map!</p>
+            </div>
+        </div>
+
+        <div id="map"></div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20n6aGg6KrHkGkM8l6FzT4jYmRk+m4oQ2zQh5W1r5oXo="
+        crossorigin=""></script>
+    <script src="script.js"></script>
+</body>
+</html>
