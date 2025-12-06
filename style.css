@@ -20,7 +20,7 @@ body {
     color: var(--text-color);
     background-color: var(--background-color);
     height: 100vh;
-    overflow: hidden; /* Hide scrollbar */
+    overflow: hidden; 
 }
 
 main {
@@ -28,7 +28,7 @@ main {
     height: 100%;
 }
 
-/* --- SIDEBAR STYLES --- */
+/* --- DESKTOP/DEFAULT STYLES (Sidebar on Left) --- */
 
 #sidebar {
     width: 350px;
@@ -41,6 +41,14 @@ main {
     z-index: 1000;
 }
 
+#map {
+    flex-grow: 1;
+    height: 100%;
+    min-width: 0; 
+}
+
+/* --- FONT/CONTROL STYLES --- */
+
 header h1 {
     font-weight: 700;
     font-size: 1.8em;
@@ -48,50 +56,24 @@ header h1 {
     margin-bottom: 5px;
 }
 
-header p {
-    font-size: 0.9em;
-    color: #A0A0A0;
-}
-
-/* --- CONTROLS AND INPUTS --- */
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 15px;
-}
-
-label {
-    font-weight: 400;
-    font-size: 0.95em;
-}
-
+/* Inputs and Buttons are larger for easy mobile tapping */
 input[type="number"] {
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #444;
     background-color: #252525;
     color: var(--text-color);
-    border-radius: 4px;
-    font-size: 1em;
+    border-radius: 6px; /* Slightly rounder for mobile */
+    font-size: 1.1em;
 }
-
-.input-description {
-    font-size: 0.75em;
-    color: #888;
-    margin-top: 5px;
-}
-
-/* --- BUTTONS --- */
 
 #generateBtn {
     background-color: var(--primary-color);
     color: var(--surface-color);
-    padding: 12px 20px;
+    padding: 15px 20px; /* Bigger tap area */
     border: none;
-    border-radius: 4px;
+    border-radius: 6px; 
     cursor: pointer;
-    font-size: 1.05em;
+    font-size: 1.1em;
     font-weight: 700;
     transition: background-color 0.2s, opacity 0.2s;
     text-transform: uppercase;
@@ -107,7 +89,7 @@ input[type="number"] {
     opacity: 0.6;
 }
 
-/* --- STATUS AND RESULTS --- */
+/* --- RESULTS STYLES --- */
 
 #status-box {
     margin-top: 15px;
@@ -116,63 +98,35 @@ input[type="number"] {
     background-color: #252525;
 }
 
-#status {
-    font-style: italic;
-    font-size: 0.9em;
-}
-
-.status-loading {
-    color: var(--loading-color);
-}
-
-.status-error {
-    color: var(--error-color);
-}
-
 #results-display {
     margin-top: 20px;
     padding: 20px 0;
     border-top: 1px solid #333;
 }
 
-#results-display h3 {
-    color: var(--primary-color);
-    margin-bottom: 10px;
-}
-
-#results-lat, #results-lng {
-    font-family: monospace;
-    font-size: 1.1em;
-    padding: 3px 0;
-}
-
-/* --- MAP STYLES --- */
-
-#map {
-    flex-grow: 1;
-    height: 100%;
-    min-width: 0; /* Necessary for flex-grow to work properly */
-}
 
 /* --- MEDIA QUERIES (Mobile Responsiveness) --- */
 
 @media (max-width: 768px) {
+    body {
+        overflow-y: auto; /* Allow scrolling on the body for mobile */
+    }
     main {
         flex-direction: column;
     }
+    
+    /* MAP STYLES FOR MOBILE: takes up top 60% of viewport */
+    #map {
+        width: 100%;
+        height: 60vh; 
+        order: 1;
+    }
 
+    /* SIDEBAR STYLES FOR MOBILE: takes up bottom 40% and scrolls */
     #sidebar {
         width: 100%;
         padding: 20px;
-        order: 2; /* Move sidebar below map on small screens */
-    }
-
-    #map {
-        order: 1;
-        height: 60vh; /* Map takes up 60% of viewport height */
-    }
-
-    #results-display {
-        display: none; /* Hide detailed results on small screens for brevity */
+        order: 2;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
     }
 }
