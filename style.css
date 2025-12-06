@@ -62,14 +62,14 @@ input[type="number"] {
     border: 1px solid #444;
     background-color: #252525;
     color: var(--text-color);
-    border-radius: 6px; /* Slightly rounder for mobile */
+    border-radius: 6px; 
     font-size: 1.1em;
 }
 
 #generateBtn {
     background-color: var(--primary-color);
     color: var(--surface-color);
-    padding: 15px 20px; /* Bigger tap area */
+    padding: 15px 20px; 
     border: none;
     border-radius: 6px; 
     cursor: pointer;
@@ -109,7 +109,7 @@ input[type="number"] {
 
 @media (max-width: 768px) {
     body {
-        overflow-y: auto; /* Allow scrolling on the body for mobile */
+        overflow-y: auto; 
     }
     main {
         flex-direction: column;
