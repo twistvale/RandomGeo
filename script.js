@@ -42,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
+        // **CRITICAL FIX:** Force Leaflet to recalculate the map container size. 
+        // This is necessary for maps in flexible layouts (like on mobile).
+        map.invalidateSize();
+
         // Add User Marker (Blue)
         userMarker = L.marker([lat, lng], {
             icon: L.icon({
@@ -55,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handleGenerate(); 
     }
 
-    // --- 2. GEOLOCATION (Bug Fix Included) ---
+    // --- 2. GEOLOCATION (Robust Error Handling) ---
 
     function getLocation() {
         updateStatus('Finding your location...', 'loading');
@@ -71,13 +75,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateStatus('Location found. First point generated!');
                     generateBtn.disabled = false;
                 },
-                // Error (e.g., permission denied)
+                // Error (Permission Denied/Timeout)
                 (error) => {
                     console.error("Geolocation Error:", error);
-                    // Use fallback/default location if geolocation fails
+                    // Use fallback/default location if user location fails
                     initMap(DEFAULT_LAT, DEFAULT_LNG);
                     updateStatus(`Error: Location failed. Using default coordinates.`, 'error');
-                    generateBtn.disabled = false; // Enable button to allow manual generation
+                    generateBtn.disabled = false; // Enable button for manual generation
                 }
             );
         } else {
@@ -92,14 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Generates a random coordinate within a given radius (in meters) of a central point.
-     * Uses pseudo-randomness for uniform area distribution.
      */
     function getRandomPointInRadius(centerLat, centerLng, radius) {
         const R = 6378137; // Earth's radius in meters
         
         const angle = Math.random() * 2 * Math.PI;
-
-        // Use sqrt(rand) for uniform area distribution
         const distance = Math.sqrt(Math.random()) * radius; 
 
         const dLat = (distance / R) * Math.cos(angle);
@@ -162,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // D. Update UI and Map View
         updateResultsDisplay(randomPoint.lat, randomPoint.lng);
-        // Fit the map to the search circle
         map.fitBounds(searchCircle.getBounds(), { padding: [50, 50] });
 
         updateStatus(`Point generated at ${radius} meters. Time to explore!`);
