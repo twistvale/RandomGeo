@@ -13,6 +13,8 @@
 <body>
 
     <main>
+        <div id="map"></div>
+        
         <div id="sidebar">
             <header>
                 <h1>🌌 Quantum Explorer</h1>
@@ -23,7 +25,7 @@
                 <div class="input-group">
                     <label for="radius">Exploration Radius (meters):</label>
                     <input type="number" id="radius" value="1000" min="100" max="10000">
-                    <span class="input-description">Try a smaller radius (e.g., 500) for local points.</span>
+                    <span class="input-description">Tap the **Red Marker** for the coordinates.</span>
                 </div>
                 
                 <button id="generateBtn">
@@ -39,11 +41,8 @@
                 <h3>📍 Target Coordinates:</h3>
                 <p id="results-lat">Lat: --</p>
                 <p id="results-lng">Lng: --</p>
-                <p class="input-description">Walk toward the **Red Marker** on the map!</p>
             </div>
         </div>
-
-        <div id="map"></div>
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
