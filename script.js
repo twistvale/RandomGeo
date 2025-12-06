@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let userMarker = null;
     let pointMarker = null;
     let searchCircle = null;
+    const DEFAULT_LAT = 51.509865; // London center (Fallback)
+    const DEFAULT_LNG = -0.118092; 
 
-    // --- 1. GEOLOCATION AND MAP INITIALIZATION ---
+    // --- Utility Functions ---
 
     function updateStatus(message, type = 'default') {
         statusText.textContent = message;
@@ -28,15 +30,19 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsLng.textContent = `Lng: ${lng.toFixed(6)}`;
     }
 
+    // --- 1. MAP INITIALIZATION ---
+
     function initMap(lat, lng) {
         if (map) return; 
 
+        // Set the map view and tile layer
         map = L.map(mapDiv).setView([lat, lng], 14);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
+        // Add User Marker (Blue)
         userMarker = L.marker([lat, lng], {
             icon: L.icon({
                 iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -45,9 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }).addTo(map).bindPopup("Your Location").openPopup();
         
-        // Automatically generate the first point
+        // Generate the first point automatically
         handleGenerate(); 
     }
+
+    // --- 2. GEOLOCATION (Bug Fix Included) ---
 
     function getLocation() {
         updateStatus('Finding your location...', 'loading');
@@ -55,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
+                // Success
                 (position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
@@ -62,20 +71,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateStatus('Location found. First point generated!');
                     generateBtn.disabled = false;
                 },
+                // Error (e.g., permission denied)
                 (error) => {
-                    updateStatus(`Error: Geolocation failed (${error.code}). Please enable location services.`, 'error');
                     console.error("Geolocation Error:", error);
+                    // Use fallback/default location if geolocation fails
+                    initMap(DEFAULT_LAT, DEFAULT_LNG);
+                    updateStatus(`Error: Location failed. Using default coordinates.`, 'error');
+                    generateBtn.disabled = false; // Enable button to allow manual generation
                 }
             );
         } else {
-            updateStatus("Geolocation is not supported by this browser.", 'error');
+            // Geolocation not supported by the browser
+            updateStatus("Geolocation is not supported. Using default coordinates.", 'error');
+            initMap(DEFAULT_LAT, DEFAULT_LNG);
+            generateBtn.disabled = false;
         }
     }
 
-    // --- 2. COORDINATE GENERATION LOGIC ---
+    // --- 3. COORDINATE GENERATION LOGIC ---
 
     /**
      * Generates a random coordinate within a given radius (in meters) of a central point.
+     * Uses pseudo-randomness for uniform area distribution.
      */
     function getRandomPointInRadius(centerLat, centerLng, radius) {
         const R = 6378137; // Earth's radius in meters
@@ -85,10 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Use sqrt(rand) for uniform area distribution
         const distance = Math.sqrt(Math.random()) * radius; 
 
-        // Calculate delta latitude (approximate)
         const dLat = (distance / R) * Math.cos(angle);
-        
-        // Calculate delta longitude (approximate, adjusted for latitude)
         const dLng = (distance / (R * Math.cos(Math.PI * centerLat / 180))) * Math.sin(angle);
 
         const newLat = centerLat + (dLat * 180 / Math.PI);
@@ -97,11 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return { lat: newLat, lng: newLng };
     }
 
-    // --- 3. EVENT HANDLER ---
+    // --- 4. EVENT HANDLER ---
 
     function handleGenerate() {
         if (!map || !userMarker) {
-            updateStatus('Map not initialized. Please wait for location.', 'error');
+            updateStatus('Map not ready. Please wait for initialization.', 'error');
             return;
         }
 
@@ -125,13 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         searchCircle = L.circle([centerLat, centerLng], {
             radius: radius,
-            color: '#FFC107', /* Yellow border */
+            color: '#FFC107', 
             fillColor: '#FFC107',
             fillOpacity: 0.15,
             weight: 2
         }).addTo(map);
 
-        // C. Update Point Marker (Use a Red marker for the destination)
+        // C. Update Point Marker (Red destination marker)
         if (pointMarker) {
             map.removeLayer(pointMarker);
         }
@@ -148,16 +162,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // D. Update UI and Map View
         updateResultsDisplay(randomPoint.lat, randomPoint.lng);
+        // Fit the map to the search circle
         map.fitBounds(searchCircle.getBounds(), { padding: [50, 50] });
 
-        updateStatus(`Point generated at ${radius} meters. Ready for exploration!`);
+        updateStatus(`Point generated at ${radius} meters. Time to explore!`);
     }
 
     // Initial setup listeners
     generateBtn.addEventListener('click', handleGenerate);
-    // Re-run generation if the radius changes
     radiusInput.addEventListener('change', handleGenerate); 
     
-    // Start geolocation process
+    // Start the process
     getLocation();
 });
