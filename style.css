@@ -1,0 +1,178 @@
+:root {
+    --primary-color: #4CAF50; /* Green */
+    --secondary-color: #388E3C; /* Darker Green */
+    --background-color: #121212; /* Dark background */
+    --surface-color: #1E1E1E; /* Dark surface for sidebar */
+    --text-color: #E0E0E0; /* Light text */
+    --error-color: #FF5252; /* Red for errors */
+    --loading-color: #FFC107; /* Yellow for loading */
+    --map-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    height: 100vh;
+    overflow: hidden; /* Hide scrollbar */
+}
+
+main {
+    display: flex;
+    height: 100%;
+}
+
+/* --- SIDEBAR STYLES --- */
+
+#sidebar {
+    width: 350px;
+    background-color: var(--surface-color);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    box-shadow: var(--map-shadow);
+    z-index: 1000;
+}
+
+header h1 {
+    font-weight: 700;
+    font-size: 1.8em;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 0.9em;
+    color: #A0A0A0;
+}
+
+/* --- CONTROLS AND INPUTS --- */
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: 400;
+    font-size: 0.95em;
+}
+
+input[type="number"] {
+    padding: 10px;
+    border: 1px solid #444;
+    background-color: #252525;
+    color: var(--text-color);
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.input-description {
+    font-size: 0.75em;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* --- BUTTONS --- */
+
+#generateBtn {
+    background-color: var(--primary-color);
+    color: var(--surface-color);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: 700;
+    transition: background-color 0.2s, opacity 0.2s;
+    text-transform: uppercase;
+}
+
+#generateBtn:hover:not(:disabled) {
+    background-color: var(--secondary-color);
+}
+
+#generateBtn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* --- STATUS AND RESULTS --- */
+
+#status-box {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #252525;
+}
+
+#status {
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.status-loading {
+    color: var(--loading-color);
+}
+
+.status-error {
+    color: var(--error-color);
+}
+
+#results-display {
+    margin-top: 20px;
+    padding: 20px 0;
+    border-top: 1px solid #333;
+}
+
+#results-display h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+#results-lat, #results-lng {
+    font-family: monospace;
+    font-size: 1.1em;
+    padding: 3px 0;
+}
+
+/* --- MAP STYLES --- */
+
+#map {
+    flex-grow: 1;
+    height: 100%;
+    min-width: 0; /* Necessary for flex-grow to work properly */
+}
+
+/* --- MEDIA QUERIES (Mobile Responsiveness) --- */
+
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        width: 100%;
+        padding: 20px;
+        order: 2; /* Move sidebar below map on small screens */
+    }
+
+    #map {
+        order: 1;
+        height: 60vh; /* Map takes up 60% of viewport height */
+    }
+
+    #results-display {
+        display: none; /* Hide detailed results on small screens for brevity */
+    }
+}
